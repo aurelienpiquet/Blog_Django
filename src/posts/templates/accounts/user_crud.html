@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}<title> {{ title }} </title>{% endblock %}
+
+{% block content %}
+<h1 class="text-center mt-5 mb-5">{{ message }}</h1>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <table class="d-flex justify-content-center">
+        {{ form.as_table }}
+    </table>
+    <div class="d-flex justify-content-center align-items-center">
+        <input class="m-2 btn btn-primary" type="submit" value="{{ button_form }}">
+        <a class="m-2 btn btn-outline-primary" href="{% url 'posts:blog-profile' pk=request.user.pk %}">Retour</a>
+    </div>
+</form>
+{% endblock %}

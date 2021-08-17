@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}<title> Profil de l'utilisateur {{ user.email }}</title>{% endblock %}
+
+{% block content %}
+    <h1> PROFIL PAGE </h1>
+    <section>
+        <h2>Vos informations</h2>
+        {{ user.email }}
+        {% if user.thumbnail %}
+        <div class="avatar">
+            <img src="{{ user.thumbnail.url }}" alt="">
+        </div>
+        {% endif %}
+    </section>
+    <a href="{% url 'posts:blog-avatar' pk=request.user.pk %}" class="btn btn-primary"> Changer d'avatar</a>
+    <a href="{% url 'posts:blog-password' pk=request.user.pk %}" class="btn btn-primary"> Changer de password</a>
+{% endblock %}

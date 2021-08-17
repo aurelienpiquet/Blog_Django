@@ -1,0 +1,29 @@
+body {
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+footer {
+    text-align: center;
+    margin: auto 20px 20px 20px;
+}
+
+article {
+    background-color: rgba(216, 216, 231, 0.3);
+    border:1px solid darkblue;
+    border-radius: 15px;
+    box-shadow: 12px 12px 2px 1px rgba(0, 0, 255, .2);
+    max-width: 750px;
+    margin: 5% auto;
+    padding: 30px;
+}
+
+.btn-primary {
+    background-color: steelblue;
+}
+
+#id_content {
+    width: 500px;
+}

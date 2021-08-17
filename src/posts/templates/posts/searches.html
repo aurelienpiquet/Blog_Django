@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}<title> {{ post.title | title}}</title>{% endblock %}
+
+{% block content %}
+<h1>{{message}}</h1>
+{% for post in titles %}
+<article>
+    <h1>Titre du blog : {{post.title}}</h1>
+    <h2>Publié par {{post.author_or_default }}</h2>
+    <h3>{{ post.categorie }}</h3>
+    <p>{{post.content}} <span><br><small> le {{post.created_on |date:'j F Y'}}</small></span></p>
+    <a href="{% url 'posts:blog-post' post.pk %}"> Lien vers l'article </a>
+    <hr>
+</article>
+{% endfor %}
+<a href="{% url 'posts:home' %}" class="btn btn-primary">Lien HomeBlog</a>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block title %}<title>Acceuil du blog</title>{% endblock %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="bg-light">
+    <header class="mb-3 bg-dark">
+        <nav class="container navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+              <a class="navbar-brand" href="{% url 'posts:home'%}">Mon Blog</a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarText">
+                <ul class="navbar-nav me-auto ms-5 mb-2 mb-lg-0 d-flex align-items-center">
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{% url 'posts:home'%}">Home</a>
+                  </li>
+                  {% if user.is_admin %}
+                  <li>
+                    <a class="nav-link" href="{% url 'admin:index' %}">Administrator</a>
+                  </li>
+                  <li>
+                    <a href="{% url 'posts:blog-post-create' %}" class="nav-link active"> Ajouter un blog </a>
+                  </li>  
+                  {% endif %}
+
+                  {% if not request.user.is_authenticated %}
+                  <li>
+                    <a href="{% url 'posts:blog-signup' %}" class="nav-link active"> Créer un compte </a>
+                  </li>
+                  <li>
+                    <a href="{% url 'posts:blog-login' %}" class="nav-link active"> Se connecter </a>
+                  </li>
+                  <li>
+                    <a href="{% url 'posts:blog-logout' %}" class="nav-link active"> Se déconnecter </a>
+                  </li>
+                  {% endif %}
+                  {% if request.user.is_authenticated %}
+                  <li>
+                    <a href="{% url 'posts:blog-profile' pk=user.pk %}" class="nav-link active"> Profil </a>
+                  </li>
+                  <li>
+                    <a href="{% url 'posts:blog-logout' %}" class="nav-link active"> Se déconnecter </a>
+                  </li>
+                </ul>
+
+                    <div class="avatar-nav">
+                      <img class="w-100" src="{{ request.user.thumbnail.url }}" alt="">
+                    </div>
+
+                  {% endif %}
+                  
+
+              </div>
+            </div>
+        </nav>
+    </header>
+    <main>
+    <p>Info site : {{ site }} - {{ site.name }} - {{ user.email }} - {{ user.pk }} - {{ user.last_login }} - {{ user.date_joined }}</p>  
+    <section class="container">
+        
+        {% block content %}{% endblock %}
+    
+    </section>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <footer class=""> Copyright AurelienP 2021 </footer>
+</body>
+</html>

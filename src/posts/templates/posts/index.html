@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}<title> HomePage Du Blog</title>{% endblock %}
+
+{% block content %}
+<h1 class="text-center mt-5 mb-5"> Bienvenue sur le blog {{ user.email }} {{ user.pk }}</h1>
+
+<nav class="m-5">
+    <ul class="d-flex align-items-center justify-content-center">
+        {% for category in categories %}
+            <li class="me-3" style="list-style-type: none">
+                <form action="{% url 'posts:blog-search-category' %}" method="get">
+                    {% csrf_token %}
+                    <input type="submit" value="{{ category.name }}" name="search" class="btn btn-primary">
+                </form>
+            </li>
+        {% endfor %}
+        <li>
+            <form action="{% url 'posts:blog-search-category' %}" method="post">
+                {% csrf_token %}
+                    {{ search_form.as_p }}
+                <input type="submit" value="Recherche" class="btn btn-primary">
+            </form>
+        </li>
+</ul>
+
+<div class="me-3" style="list-style-type: none">
+    <form action="{% url 'posts:blog-search' %}" method="get">
+        <input type="text" name="search" type="search" placeholder="Rechercher...">
+        <input type="submit" value="Rechercher">
+    </form>
+</div>
+
+<section class="text-center">
+    {% include 'posts/_paginate.html' %}
+</section>
+
+</nav>
+{% for post in posts %}
+    <article class="">
+        <h2 class="text-center mb-3">Article n°{{ forloop.counter }} : <strong>{{post.title}} </strong></h2>
+        <h3>{{ post.categorie }}</h3>
+        <p class="mt-2 mb-2">{{post.content|safe|truncatewords:50}}</p>
+        <p class="w-50 ms-auto text-center"><small>Rédigé par <em><strong>{{ post.author_or_default }}</strong></em> {{post.created_on | date:'j F Y'}} {{ post.is_published }}</small></span></p>
+        {% if post.thumbnail %}
+        <div class="logo shadow">
+            <img class="" src="{{ post.thumbnail.url }}" alt="Image de background">
+        </div>
+        {% endif %}
+        <div class="d-flex justify-content-center">
+            <a href="{% url 'posts:blog-post' pk=post.pk %}" class="btn btn-primary me-3">L'article</a>
+            {% if request.user.is_admin %}
+                <a href="{% url 'posts:blog-post-update' pk=post.pk %}" class="btn btn-primary me-3">Update</a>
+                <a href="{% url 'posts:blog-post-delete' pk=post.pk %}" class="btn btn-outline-primary me-3">Delete</a>
+            {% endif %}
+        </div>
+    </article>
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,17 @@
+<div class="pagination w-25 m-auto">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a class="me-2" href="?page=1">&laquo; Première</a>
+            <a class="me-2" href="?page={{ page_obj.previous_page_number }}">Précédent</a>
+        {% endif %}
+
+        {% if page_obj.has_next %}
+            <a class="me-2" href="?page={{ page_obj.next_page_number }}">Suivant</a>
+            <a class="me-2" href="?page={{ page_obj.paginator.num_pages }}">Dernière &raquo;</a>
+        {% endif %}
+
+        <span class="current ms-2">
+            <small>Page {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}.</small>
+        </span>
+    </span>
+</div>
