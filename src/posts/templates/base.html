@@ -22,6 +22,9 @@
                   <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="{% url 'posts:home'%}">Home</a>
                   </li>
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{% url 'ecommerce:home'%}">Vente</a>
+                  </li>
                   {% if user.is_admin %}
                   <li>
                     <a class="nav-link" href="{% url 'admin:index' %}">Administrator</a>
@@ -37,9 +40,6 @@
                   </li>
                   <li>
                     <a href="{% url 'posts:blog-login' %}" class="nav-link active"> Se connecter </a>
-                  </li>
-                  <li>
-                    <a href="{% url 'posts:blog-logout' %}" class="nav-link active"> Se déconnecter </a>
                   </li>
                   {% endif %}
                   {% if request.user.is_authenticated %}
@@ -63,6 +63,7 @@
         </nav>
     </header>
     <main>
+    {% include '_flash_message.html' %}
     <p>Info site : {{ site }} - {{ site.name }} - {{ user.email }} - {{ user.pk }} - {{ user.last_login }} - {{ user.date_joined }}</p>  
     <section class="container">
         
@@ -71,7 +72,8 @@
     </section>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-
+    <script src="{% static 'js/flash.js' %}"></script>
+    <script>removeFlashes();</script>
     <footer class=""> Copyright AurelienP 2021 </footer>
 </body>
 </html>

@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
 from django.urls import reverse
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
+from django.http import request
 # Create your models here.
 
 #User = get_user_model()
@@ -112,7 +113,7 @@ class BlogPost(models.Model):
 
     @property
     def categorie(self):
-        return ",".join([str(categorie) for categorie in self.category.all()])
+        return ", ".join([str(categorie) for categorie in self.category.all()])
 
     @property
     def nb_categories(self):

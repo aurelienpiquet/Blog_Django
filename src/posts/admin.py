@@ -26,13 +26,13 @@ class CustomUserAdmin(admin.ModelAdmin):
 @admin.register(BlogCategory)
 class BlogCategoryAdmin(admin.ModelAdmin):
     list_display = ("name", "slug", "created_on",)
-    list_editatble = ("name")
 
 @admin.register(BlogComment)
 class BlogCategoryAdmin(admin.ModelAdmin):
     list_display = ("title", "slug", "created_on", "author", "post")
-    list_editatble = ("name")
 
     list_filter =('post',)
+
+
 
 

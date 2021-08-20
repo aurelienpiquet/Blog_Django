@@ -2,9 +2,10 @@
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from django.forms import MultiWidget
-from django.forms.widgets import CheckboxSelectMultiple
+from django.forms.widgets import CheckboxSelectMultiple, SelectDateWidget, DateInput, DateTimeInput
 from posts.models import BlogCategory
 from posts.models import CustomUser,BlogComment, BlogCategory, BlogPost
+import datetime
 
 
 class CustomSignupForm(UserCreationForm):
@@ -12,7 +13,6 @@ class CustomSignupForm(UserCreationForm):
         model = CustomUser
         fields = ("email","thumbnail")
         #fields = UserCreationForm.Meta.fields
-
 
 class AvatarForm(forms.ModelForm):
     class Meta:
@@ -36,5 +36,15 @@ class SearchForm(forms.ModelForm):
         #print(cat_list)
         #search = forms.MultipleChoiceField(required=False, widget=forms.CheckboxSelectMultiple, choices=cat_list)
         widgets = {'category' : CheckboxSelectMultiple}   
+
+class CreatePost(forms.ModelForm):
+    class Meta:
+        model = BlogPost
+        required = True
+        fields = ('title', 'author', 'category', 'created_on', 'content',)
+        widgets = {'created_on' : DateTimeInput}
+        
+
+    
 
 

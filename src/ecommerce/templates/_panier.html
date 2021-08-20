@@ -1,0 +1,34 @@
+<section class="panier col-6 m-3">
+    <ul class="list-group">
+        <li class="list-group-item row justify-content-between">
+            
+                <h1>Votre Panier :</h1>
+                <h2 class="text-end">Total : <strong>{{ total }}€</strong></h2>
+            
+            <div class="text-end">
+                <form action="" method="post">
+                    {% csrf_token %}
+                    {{ validation_form }}
+                    <input class="btn btn-success" type="submit" value="Valider la commander">
+                </form>
+
+            </div>
+        </li>
+        {% for panier in paniers %}
+            {% for elm in panier %}
+            <li class="list-group-item row d-flex align-items-baseline ">
+                <div class="col-1">
+                    <img class="w-100" src="{{ elm.article.thumbnail.url }}" alt="">
+                </div>
+                <p class="col-7 p-0"><a href="{% url 'ecommerce:ecommerce-article' slug=elm.article.slug %}"><strong>{{elm.article }}</strong></a> - {{ elm.article.categorie }} : {{ elm.nb }} x {{ elm.price }}€ = {{ elm.total }}€</p>
+                <form class="col-4 text-end" action="{% url 'ecommerce:delete-panier' pk=elm.article.pk panier=elm %}" method="post">
+                    {% csrf_token %}
+                    <input type="number" placeholder="{{ elm.nb }}" min="1" max="{{ elm.nb }}" name="nb">
+                    <input type="submit" value="Retirer">
+                </form>
+            </li>
+            {% endfor %}
+        {% endfor %}
+
+    </ul>
+</section>

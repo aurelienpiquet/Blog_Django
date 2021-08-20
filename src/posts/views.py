@@ -7,7 +7,9 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView, PasswordResetView
-from posts.forms import CustomSignupForm, AvatarForm, CommentForm, SearchForm
+from posts.forms import CustomSignupForm, AvatarForm, CommentForm, SearchForm, CreatePost
+from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 
 class BlogHome(ListView):
     model = BlogPost
@@ -35,7 +37,7 @@ class Blog(DetailView):
     template_name = 'posts/blog.html'
     form_class = CommentForm
     fields = ['title','content']
-
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         comments = BlogComment.objects.filter(post__pk=self.request.resolver_match.kwargs.get('pk'))
@@ -62,6 +64,7 @@ def search_blog(request):
         search = request.GET.get('search')
         #titles = BlogPost.objects.filter(title__contains=search)
         titles = get_list_or_404(BlogPost, title__contains=search)
+        messages.add_message(request, messages.INFO, "Recherche réussie.")
         return render(request, 'posts/searches.html', context = {'titles' : titles})
 
 def search_blog_category(request):
@@ -75,7 +78,6 @@ def search_blog_category(request):
         form = SearchForm(request.POST)
         list_categories = form.data.getlist('category') 
         titles_search = get_list_or_404(BlogPost, category__in=list_categories)
-        #titles_search = list(BlogPost.objects.filter(category__in=form.data.getlist('category')))
         titles = list(set([title for title in titles_search if title.nb_categories == len(list_categories)]))
         message = f"{len(titles)} article(s) ont été trouvé(s)."
         if not titles :
@@ -97,27 +99,35 @@ class DeleteComment(DeleteView):
         return context
 
 
-class CreateBlog(LoginRequiredMixin, CreateView):
+class CreateBlog(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     login_url = '/login/'
     redirect_url = '/create/'
     model = BlogPost
     template_name = "posts/blogpost_crud.html"
-    fields = ['title', 'content']
-    title = "Ajouter un Post"
-
+    form_class = CreatePost
+    title = "default"
+    success_message = "Le post %(title)s a bien été crée."
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['message'] = "Voulez-vous créer un nouveau blog?"
         context['button_form'] = "Ajouter"
         return context
+    
+    def get_success_message(self, cleaned_data):
+        return self.success_message % dict(
+            cleaned_data,
+            title=self.object.title,
+        )
 
 @method_decorator(login_required, name="dispatch")
-class UpdateBlog(UpdateView):
+class UpdateBlog(SuccessMessageMixin, UpdateView):
     model = BlogPost
     template_name = "posts/blogpost_crud.html"
     context_object_name = "blog"
     fields = ['title', 'author', 'published', 'content', 'thumbnail']
     title = "Mettre à jour un blog"
+    success_message = 'Le post %(title)s a bien été mise à jour.'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -126,34 +136,42 @@ class UpdateBlog(UpdateView):
         return context
 
 @method_decorator(login_required, name="dispatch")
-class DeleteBlog(DeleteView):
+class DeleteBlog(SuccessMessageMixin, DeleteView):
     model = BlogPost
     template_name = "posts/blogpost_crud.html"
     context_object_name = "blog"
     success_url = reverse_lazy("posts:home")
     title = "default"
+    success_message = 'Le post %(title)s a bien été supprimé.'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)    
         context['button_form'] = "Supprimer"
         context['message'] = "Voulez-vous supprimer le blog suivant?"
+        messages.add_message(self.request, messages.SUCCESS, 'Le post a bien été supprimé.')
         return context
+    
+    def get_success_message(self, cleaned_data):
+        return self.success_message % dict(
+            cleaned_data,
+            title=self.object.title,
+        )
 
 def signup(request):
     context = {}
-    context["button_form"] = "Créer un compte"
-    context["message"] = "Formulaire de création de nouveau compte"
-    context["title"] = "Création d'un nouveau compte"
-    
     if request.method == 'POST':
         form = CustomSignupForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('posts:home')
+            messages.add_message(request, messages.SUCCESS, f"L'utilisateur {form.data.getlist('email')[0]} a bien été crée.")
+            return redirect('posts:blog-login')
         else :
             context['errors'] = form.errors
     
     form = CustomSignupForm()
+    context["button_form"] = "Créer un compte"
+    context["message"] = "Formulaire de création de nouveau compte"
+    context["title"] = "Création d'un nouveau compte"
     context["form"] = form
     return render(request, 'accounts/connections.html', context=context)
 
@@ -174,7 +192,6 @@ class BlogPostLogin(LoginView):
 
 class BlogPostLogout(LogoutView):
     next_page = '/'
-
 
 class BlogPostUserProfil(DetailView):
     model = CustomUser
@@ -208,3 +225,4 @@ class BlogPasswordResetView(PasswordResetView):
     model = CustomUser
     template_name = "accounts/user_crud.html"
     next_page = "/"
+

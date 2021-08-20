@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}<title>{{title}}</title>{% endblock %}
+
+{% block content %}
+<section class="row">
+
+{% include '_panier.html' %}
+
+<article class="col-3 m-3">
+    <h2>{{ article.name }}</h2>
+    <div class="search-list">
+        <img src="{{ article.thumbnail.url }}" alt="Image de {{ article }}">
+    </div>
+    <h3><small>Categorie : {{ article.categorie }}</small> </h3>
+    <p>{{ article.description }}</p>
+    <form method="post" action="{% url 'ecommerce:create-panier' pk=article.pk %}" class="w-auto row justify-content-evenly align-items-center">
+        {% csrf_token %}
+    
+        <table class="w-auto mb-3">
+            {{ form.as_table }}
+        </table>
+        <!--<input class="col-3" type="number" placeholder="1" min="1" max="{{article.stock}}" required>-->
+        <p class="col-4 mb-0 "><small> ({{ article.stock }} en stock)</small></p>
+        <input class="col-4 btn btn-primary" type="submit" value="Ajouter">
+    </form>
+</article>
+</section>
+<a href="{% url 'ecommerce:home' %}" class="btn btn-primary"> Retour Ecommerce</a>
+
+
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}<title> {{ title }} </title>{% endblock %}
+
+{% block content %}
+    <h1 class="text-center">{{title}}</h1>
+    {% include '_panier.html' %}
+    <section>
+        <ul class="d-flex justify-content-center align-content-center">
+            {% for category in categories %}
+            <li class="me-3" style="list-style-type: none">
+                <form action="{% url 'ecommerce:search-category' %}" method="get">
+                    {% csrf_token %}
+                    <input type="submit" value="{{ category.name }}" name="search" class="btn btn-primary">
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    {% include 'posts/_paginate.html' %}
+
+        <section class="row justify-content-center align-items-center flex-wrap">
+            {% for article in articles %}
+                <article class="col-3 m-3">
+                    <a  href="{% url 'ecommerce:ecommerce-article' slug=article.slug %}">
+                    <h2>{{ article.name }}</h2>
+                    <h3><small>Categorie : {{ article.categorie }}</small> </h3>
+                    <div class="m-auto w-25 mb-2">
+                        <img class="w-100" src="{{ article.thumbnail.url }}" alt="">
+                    </div>
+                    <p>Description: {{ article.description }}</p>
+                    </a>
+                    <div class="article-form">
+                        <form method="post" action="{% url 'ecommerce:create-panier' pk=article.pk %}" class="w-auto row justify-content-evenly align-items-baseline">
+                            {% csrf_token %}  
+                            <div class="col-4 d-flex justify-content-evenly align-items-center">{{ form }}</div>                            
+                            <input class="col-4 btn btn-primary" type="submit" value="Ajouter">
+                            <p class="mb-0 mt-1 text-center"><small> ({{ article.stock }} en stock)</small></p>
+                        </form>
+                        
+                    </div>
+                </article>
+            
+            {% endfor %}
+        </section>
+{% endblock %}

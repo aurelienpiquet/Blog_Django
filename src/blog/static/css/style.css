@@ -14,7 +14,13 @@ footer {
 
 a {
     text-decoration: none;
+    color:black;
 }
+
+li {
+    list-style-type: none;
+}
+
 
 article {
     background-color: rgba(216, 216, 231, 0.3);
@@ -24,6 +30,14 @@ article {
     max-width: 750px;
     margin: 5% auto;
     padding: 30px;
+    min-height: 400px;
+    position:relative;
+}
+
+.article-form {
+    position:absolute;
+    bottom: 30px;
+    width: 100%;
 }
 
 .btn-primary {
@@ -70,4 +84,39 @@ article {
 
 .avatar > img {
     width:100%;
+}
+
+/** FLASH MESSAGE **/
+
+ul.messages {
+    border: 1px solid black;
+    background-color: lightgrey;
+    transition: all 0.5s ease;
+}
+
+ul.messages > li {
+    font-size: 2rem;
+    color: green;
+}
+
+
+/** ECommerce **/
+
+.search-list {
+    width:100%;
+}
+
+.search-list > img {
+    width: 100%;
+    height:auto;
+}
+
+
+input[type=number] {
+    width: 60px;
+    margin-left: 10px;
+}
+
+.panier {
+    
 }

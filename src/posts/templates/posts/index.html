@@ -5,7 +5,13 @@
 <h1 class="text-center mt-5 mb-5"> Bienvenue sur le blog {{ user.email }} {{ user.pk }}</h1>
 
 <nav class="m-5">
-    <ul class="d-flex align-items-center justify-content-center">
+    <ul class="d-flex align-items-center justify-content-center group-list">
+        <li class="me-3" style="list-style-type: none">
+            <form action="{% url 'posts:blog-search' %}" method="get">
+                <input type="text" name="search" type="search" placeholder="Rechercher...">
+                <input type="submit" value="Rechercher">
+            </form>
+        </li>
         {% for category in categories %}
             <li class="me-3" style="list-style-type: none">
                 <form action="{% url 'posts:blog-search-category' %}" method="get">
@@ -21,20 +27,11 @@
                 <input type="submit" value="Recherche" class="btn btn-primary">
             </form>
         </li>
-</ul>
-
-<div class="me-3" style="list-style-type: none">
-    <form action="{% url 'posts:blog-search' %}" method="get">
-        <input type="text" name="search" type="search" placeholder="Rechercher...">
-        <input type="submit" value="Rechercher">
-    </form>
-</div>
-
+    </ul>
+</nav>
 <section class="text-center">
     {% include 'posts/_paginate.html' %}
 </section>
-
-</nav>
 {% for post in posts %}
     <article class="">
         <h2 class="text-center mb-3">Article n°{{ forloop.counter }} : <strong>{{post.title}} </strong></h2>
